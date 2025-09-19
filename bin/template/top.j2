@@ -1,0 +1,14 @@
+module tb_top();
+
+    //{{env_name}}_top dut ();
+
+    `include "{{env_name}}_vars.sv"
+    `include "{{env_name}}_clk_reset.sv"
+    `include "{{env_name}}_self_logic.sv"
+    `include "{{env_name}}_connect.sv"
+
+    initial begin
+        $runtest();
+    end
+
+endmodule

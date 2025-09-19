@@ -1,0 +1,146 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+"""
+nvri.py
+
+Author: Gavin
+Date: 2025-8-15
+Description: A script to create a new verification environment directory structure 
+            and populate it with template files.
+"""
+
+import sys
+import argparse
+import os
+import re
+import jinja2
+
+parser = argparse.ArgumentParser(description="Description of your script")
+parser.add_argument("-env_name", type=str, help="Sys Name")
+args = parser.parse_args()
+
+def main():
+    env_name = args.env_name
+    if not env_name:
+        print("Error: -env_name argument is required.")
+        sys.exit(1)
+    try:
+        os.makedirs(env_name+"_tb", exist_ok=True)
+        print(f"Environment '{env_name}' created successfully.")
+    except Exception as e:
+        print(f"Error creating environment '{env_name}': {e}")
+        sys.exit(1)
+    try:
+        os.makedirs(os.path.join(env_name+"_tb", "env"), exist_ok=True)
+        print(f"Directory env created successfully.")
+    except Exception as e:
+        print(f"Error creating directory 'env': {e}")
+        sys.exit(1)
+    try:
+        os.makedirs(os.path.join(env_name+"_tb", "ctests"), exist_ok=True)
+        print(f"Directory ctests created successfully.")
+    except Exception as e:
+        print(f"Error creating directory 'ctests': {e}")
+        sys.exit(1) 
+    try:
+        os.makedirs(os.path.join(env_name+"_tb", "svtests"), exist_ok=True)
+        print(f"Directory svtests created successfully.")
+    except Exception as e:
+        print(f"Error creating directory 'svtests': {e}")
+        sys.exit(1)
+    try:
+        os.makedirs(os.path.join(env_name+"_tb", "top"), exist_ok=True)
+        print(f"Directory top created successfully.")
+    except Exception as e:
+        print(f"Error creating directory 'top': {e}")
+        sys.exit(1)
+    
+    # Load and use env.j2 template to generate env_name+_env.sv
+    try:
+        template_loader = jinja2.FileSystemLoader('template')
+        template_env = jinja2.Environment(loader=template_loader)
+        env_template = template_env.get_template('env.j2')
+        env_content = env_template.render(env_name=env_name)
+    except Exception as e:
+        print(f"Error processing template: {e}")
+        sys.exit(1)
+    env_file_path = os.path.join(env_name+"_tb", "env", f"{env_name}_env.sv")  # Modified filename
+    try:
+        with open(env_file_path, "w") as env_file:
+            env_file.write(env_content)
+        print(f"Environment file '{env_file_path}' created successfully.")
+    except Exception as e:
+        print(f"Error creating environment file '{env_file_path}': {e}")
+        sys.exit(1)
+    
+    # Load and use env_pkg.j2 template to generate env_name+_pkg.sv
+    try:
+        env_pkg_template = template_env.get_template('env_pkg.j2')
+        env_pkg_content = env_pkg_template.render(env_name=env_name)
+    except Exception as e:
+        print(f"Error processing env_pkg template: {e}")
+        sys.exit(1)
+    env_pkg_file_path = os.path.join(env_name+"_tb", "env", f"{env_name}_pkg.sv")  # Modified filename
+    try:
+        with open(env_pkg_file_path, "w") as env_pkg_file:
+            env_pkg_file.write(env_pkg_content)
+        print(f"Environment package file '{env_pkg_file_path}' created successfully.")
+    except Exception as e:
+        print(f"Error creating environment package file '{env_pkg_file_path}': {e}")
+        sys.exit(1)
+
+    # Load and use base_test.j2 template to generate env_name+_base_test.sv
+    try:
+        base_test_template = template_env.get_template('base_test.j2')
+        base_test_content = base_test_template.render(env_name=env_name)
+    except Exception as e:
+        print(f"Error processing base test template: {e}")
+        sys.exit(1)
+    base_test_file_path = os.path.join(env_name+"_tb", "svtests", f"{env_name}_base_test.sv")  # Modified filename
+    try:
+        with open(base_test_file_path, "w") as base_test_file:
+            base_test_file.write(base_test_content)
+        print(f"Base test file '{base_test_file_path}' created successfully.")
+    except Exception as e:
+        print(f"Error creating base test file '{base_test_file_path}': {e}")
+        sys.exit(1)
+    
+    # Load and use top.j2 template to generate env_name+_top.sv
+    try:
+        top_template = template_env.get_template('top.j2')
+        top_content = top_template.render(env_name=env_name)
+    except Exception as e:
+        print(f"Error processing top template: {e}")
+        sys.exit(1)
+    top_file_path = os.path.join(env_name+"_tb", "top", f"{env_name}_top.sv")  # Modified filename
+    try:
+        with open(top_file_path, "w") as top_file:
+            top_file.write(top_content)
+        print(f"Top file '{top_file_path}' created successfully.")
+    except Exception as e:
+        print(f"Error creating top file '{top_file_path}': {e}")
+        sys.exit(1)
+    
+    # Load and use connect.j2 template to generate env_name+_connect.sv
+    try:
+        connect_template = template_env.get_template('connect.j2')
+        connect_content = connect_template.render(env_name=env_name)
+    except Exception as e:
+        print(f"Error processing connect template: {e}")
+        sys.exit(1)
+    connect_file_path = os.path.join(env_name+"_tb", "top", f"{env_name}_connect.sv")
+    try:
+        with open(connect_file_path, "w") as connect_file:
+            connect_file.write(connect_content)
+        print(f"Connect file '{connect_file_path}' created successfully.")
+    except Exception as e:
+        print(f"Error creating connect file '{connect_file_path}': {e}")
+        sys.exit(1)
+    
+    print("All files created successfully.")
+
+
+
+if __name__ == "__main__":
+    main()

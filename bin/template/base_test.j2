@@ -1,0 +1,16 @@
+`ifdef  _{{ env_name | upper }}_BASE_TEST_SV
+`define _{{ env_name | upper }}_BASE_TEST_SV
+
+class {{ env_name }}_base_test extends uvm_test;
+
+    `uvm_component_utils({{ env_name }}_base_test)
+
+    extern function new(string name = "{{ env_name }}_base_test", uvm_component parent = null);
+
+endclass
+
+function {{ env_name }}_base_test::new(string name, uvm_component parent);
+    super.new(name, parent);
+endfunction
+
+`endif
