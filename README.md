@@ -11,11 +11,21 @@
 ```
 nveri/
 ├── docs/               # 文档目录
-├── scripts/            # 自动化脚本目录
-├── templates/          # 模板文件目录
+├── bin/                # 自动化脚本目录
+    ├──temlate          # 模板脚本
+    ├──nveri            # 部署脚本
 ├── examples/           # 示例配置目录
-├── tests/              # 测试用例目录
+├── prjtemplates/       # 项目模板目录
 ├── .gitignore          # Git忽略文件
 ├── README.md           # 项目说明文件
 └── LICENSE             # 许可证文件
 ```
+## 安装与使用
+1. 克隆仓库到本地：
+    ```bash
+    git clone
+    ```
+2. 进入项目目录：
+    ```bash
+    cd nveri
+    ```
